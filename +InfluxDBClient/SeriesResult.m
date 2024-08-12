@@ -174,7 +174,7 @@ classdef SeriesResult < handle
             end
             
             % Create the series result
-            obj = SeriesResult(name, time, tags, props);
+            obj = InfluxDBClient.SeriesResult(name, time, tags, props);
         end
     end
     

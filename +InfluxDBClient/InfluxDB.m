@@ -32,7 +32,11 @@ classdef InfluxDB < handle
         function [ok, millis] = ping(obj)
             try
                 timer = tic;
-                webread([obj.Url '/ping']);
+
+                % connect with string instead of char array
+                str_ping = sprintf("%s%s",obj.Url, '/ping');
+                fprintf("ping: %s\n",str_ping);
+                webread(str_ping);
                 millis = toc(timer) * 1000;
                 ok = true;
             catch
@@ -118,15 +122,18 @@ classdef InfluxDB < handle
         % Execute other queries or commands
         function result = runCommand(obj, command, varargin)
             idx = find(cellfun(@ischar, varargin), 1, 'first');
-            database = iif(isempty(idx), '', varargin{idx});
+            database = InfluxDBClient.iif(isempty(idx), '', varargin{idx});
             idx = find(cellfun(@islogical, varargin), 1, 'first');
-            requiresPost = iif(isempty(idx), false, varargin{idx});
+            requiresPost = InfluxDBClient.iif(isempty(idx), false, varargin{idx});
             if isempty(database)
                 params = {'q', command};
             else
                 params = {'db', database, 'q', command};
             end
-            url = [obj.Url '/query'];
+            % use string instead of char array
+            %url = [obj.Url '/query'];
+            url = sprintf("%s%s",obj.Url, '/query');
+
             opts = weboptions('Username', obj.User, 'Password', obj.Password);
             if requiresPost
                 opts.Timeout = obj.WriteTimeout;
@@ -135,7 +142,7 @@ classdef InfluxDB < handle
                 opts.Timeout = obj.ReadTimeout;
                 response = webread(url, params{:}, opts);
             end
-            result = QueryResult.from(response);
+            result = InfluxDBClient.QueryResult.from(response);
         end
     end
     

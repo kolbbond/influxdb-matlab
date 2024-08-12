@@ -53,7 +53,7 @@ classdef QueryResult < handle
             if nargin < 2, epoch = []; end
             assert(~isempty(response.results), ...
                 'from:empty', 'the response contains no results');
-            objs = arrayfun(@(x) QueryResult.wrap(x, epoch), ...
+            objs = arrayfun(@(x) InfluxDBClient.QueryResult.wrap(x, epoch), ...
                 response.results, 'UniformOutput', false);
             nonempty = ~cellfun(@isempty, objs);
             objs = cellfun(@(x) x, objs(nonempty));
@@ -67,8 +67,8 @@ classdef QueryResult < handle
                 error('query:error', 'query error: %s', result.error);
             end
             if isfield(result, 'series')
-                series = arrayfun(@(x) SeriesResult.from(x, epoch), result.series);
-                obj = QueryResult(series);
+                series = arrayfun(@(x) InfluxDBClient.SeriesResult.from(x, epoch), result.series);
+                obj = InfluxDBClient.QueryResult(series);
             else
                 obj = [];
             end
