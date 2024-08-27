@@ -128,9 +128,9 @@ classdef SeriesResult < handle
                 time_column = celled(:, 1);
                 if isnumeric(time_column{1})
                     timestamps = cell2mat(time_column);
-                    time = TimeUtils.toDatetime(timestamps, epoch);
+                    time = InfluxDBClient.TimeUtils.toDatetime(timestamps, epoch);
                 elseif ischar(time_column{1})
-                    parse = @TimeUtils.parseTimestamp;
+                    parse = @InfluxDBClient.TimeUtils.parseTimestamp;
                     time = cellfun(parse, time_column);
                 else
                     error('unsupported time type');

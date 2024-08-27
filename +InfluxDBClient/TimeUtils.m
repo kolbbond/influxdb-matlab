@@ -10,9 +10,9 @@ classdef TimeUtils
     methods(Static)
         % Format a datetime as a string
         function str = formatDatetime(dtime, precision, appendPrecision)
-            if nargin < 2, precision = TimeUtils.DEFAULT_PRECISION; end
-            if nargin < 3, appendPrecision = TimeUtils.DEFAULT_APPEND_PRECISION; end
-            scale = TimeUtils.scaleOfPrecision(precision);
+            if nargin < 2, precision = InfluxDBClient.TimeUtils.DEFAULT_PRECISION; end
+            if nargin < 3, appendPrecision = InfluxDBClient.TimeUtils.DEFAULT_APPEND_PRECISION; end
+            scale = InfluxDBClient.TimeUtils.scaleOfPrecision(precision);
             value = int64(scale * posixtime(dtime));
             if appendPrecision
                 str = [num2str(value), precision];
@@ -23,7 +23,7 @@ classdef TimeUtils
         
         % Convert a timestamp to a datetime
         function dtime = toDatetime(timestamp, precision)
-            scale = TimeUtils.scaleOfPrecision(precision);
+            scale = InfluxDBClient.TimeUtils.scaleOfPrecision(precision);
             dtime = datetime(timestamp / scale, ...
                 'ConvertFrom', 'posixtime', 'TimeZone', 'local');
         end
@@ -61,7 +61,7 @@ classdef TimeUtils
         
         % Validate a precision
         function validatePrecision(precision)
-            assert(any(strcmp(precision, TimeUtils.PRECISIONS)), ...
+            assert(any(strcmp(precision, InfluxDBClient.TimeUtils.PRECISIONS)), ...
                 'precision:unknown', '"%s" is not a valid precision', precision);
         end
         
@@ -88,7 +88,7 @@ classdef TimeUtils
         
         % Validate an epoch
         function validateEpoch(epoch)
-            assert(any(strcmp(epoch, TimeUtils.EPOCHS)), ...
+            assert(any(strcmp(epoch, InfluxDBClient.TimeUtils.EPOCHS)), ...
                 'epoch:unknown', '"%s" is not a valid epoch', epoch);
         end
         

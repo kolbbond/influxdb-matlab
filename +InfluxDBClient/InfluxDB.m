@@ -64,7 +64,7 @@ classdef InfluxDB < handle
             if nargin < 4 || isempty(epoch)
                 epoch = 'ms';
             else
-                TimeUtils.validateEpoch(epoch);
+                InfluxDBClient.TimeUtils.validateEpoch(epoch);
             end
             if iscell(query)
                 query = strjoin(query, ';');
@@ -74,17 +74,17 @@ classdef InfluxDB < handle
             opts = weboptions('Timeout', obj.ReadTimeout, ...
                 'Username', obj.User, 'Password', obj.Password);
             response = webread(url, opts);
-            result = QueryResult.from(response, epoch);
+            result = InfluxDBClient.QueryResult.from(response, epoch);
         end
         
         % Obtain a query builder
         function builder = query(obj, varargin)
             if nargin > 2
-                builder = QueryBuilder().series(varargin).influxdb(obj);
+                builder = InfluxDBClient.QueryBuilder().series(varargin).influxdb(obj);
             elseif nargin > 1
-                builder = QueryBuilder().series(varargin{1}).influxdb(obj);
+                builder = InfluxDBClient.QueryBuilder().series(varargin{1}).influxdb(obj);
             else
-                builder = QueryBuilder().influxdb(obj);
+                builder = InfluxDBClient.QueryBuilder().influxdb(obj);
             end
         end
         
@@ -97,7 +97,7 @@ classdef InfluxDB < handle
                 params{end + 1} = ['db=' urlencode(obj.Database)];
             end
             if nargin > 3 && ~isempty(precision)
-                TimeUtils.validatePrecision(precision);
+                InfluxDBClient.TimeUtils.validatePrecision(precision);
                 params{end + 1} = ['precision=' precision];
             end
             if nargin > 4  &&  ~isempty(retention)

@@ -47,7 +47,7 @@ classdef QueryBuilder < handle
                 series = varargin;
             elseif nargin > 1
                 series = varargin{1};
-                series = iif(iscell(series), series, {series});
+                series = InfluxDBClient.iif(iscell(series), series, {series});
             else
                 error('series:empty', 'must specify at least 1 serie');
             end
@@ -60,7 +60,7 @@ classdef QueryBuilder < handle
                 fields = varargin;
             elseif nargin > 1
                 fields = varargin{1};
-                fields = iif(iscell(fields), fields, {fields});
+                fields = InfluxDBClient.iif(iscell(fields), fields, {fields});
             else
                 fields = {'*'};
             end
@@ -116,7 +116,7 @@ classdef QueryBuilder < handle
             elseif ischar(before)
                 obj.Before = ['time < ''' before ''''];
             elseif isdatetime(before)
-                str = TimeUtils.formatDatetime(before, precision, true);
+                str = InfluxDBClient.TimeUtils.formatDatetime(before, precision, true);
                 obj.Before = ['time < ' str];
             else
                 error('unsupported time type');
@@ -133,7 +133,7 @@ classdef QueryBuilder < handle
             elseif ischar(before)
                 obj.Before = ['time <= ''' before ''''];
             elseif isdatetime(before)
-                str = TimeUtils.formatDatetime(before, precision, true);
+                str = InfluxDBClient.TimeUtils.formatDatetime(before, precision, true);
                 obj.Before = ['time <= ' str];
             else
                 error('unsupported time type');
@@ -150,7 +150,7 @@ classdef QueryBuilder < handle
             elseif ischar(after)
                 obj.After = ['time > ''' after ''''];
             elseif isdatetime(after)
-                str = TimeUtils.formatDatetime(after, precision, true);
+                str = InfluxDBClient.TimeUtils.formatDatetime(after, precision, true);
                 obj.After = ['time > ' str];
             else
                 error('unsupported time type');
@@ -167,7 +167,7 @@ classdef QueryBuilder < handle
             elseif ischar(after)
                 obj.After = ['time >= ''' after ''''];
             elseif isdatetime(after)
-                str = TimeUtils.formatDatetime(after, precision, true);
+                str = InfluxDBClient.TimeUtils.formatDatetime(after, precision, true);
                 obj.After = ['time >= ' str];
             else
                 error('unsupported time type');
@@ -231,6 +231,7 @@ classdef QueryBuilder < handle
         % Build base query
         function query = buildBaseQuery(obj)
             assert(~isempty(obj.Series), 'build:emptySeries', 'series not defined');
+            %fprintf("build query: %s\n",obj.Series);
             series = strjoin(obj.Series, ',');
             fields = strjoin(obj.Fields, ',');
             query = ['SELECT ' fields ' FROM ' series];
